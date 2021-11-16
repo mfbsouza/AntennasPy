@@ -95,17 +95,43 @@ class Linear_Antenna:
 
 def demo():
 	import matplotlib.pylab as plt
+	max_inter = 10
 	Ns_to_save = [1,3,5,7,9,11,13,15,19]
 	antena = Linear_Antenna()
-	current, impedance, z = antena.compute_mom(Ns_to_save, max_interactions=10)
-	print(impedance)
+	current, impedance, z = antena.compute_mom(Ns_to_save, max_interactions=max_inter)
 
-	# plotting
+	# plotting values of the last term (N = 19)
 	_, ax = plt.subplots()
+	print(impedance[-1])
+	lbl = "N = " + str(Ns_to_save[-1])
+	ax.plot(z[-1],current[-1],label=lbl)
+	ax.set(ylabel='|I| mA', xlabel='Z/λ')
+	ax.grid()
+	plt.legend()
+	plt.show()
+
+	# plotting values for all Ns
+	_, ax = plt.subplots()
+	print("")
 	for idx in range(len(Ns_to_save)):
+		print(impedance[idx])
 		lbl = "N = " + str(Ns_to_save[idx])
 		ax.plot(z[idx],current[idx], label=lbl)
 	ax.set(ylabel='|I| mA', xlabel='Z/λ')
+	ax.grid()
+	plt.legend()
+	plt.show()
+
+	# plotting impedance change per N
+	_, ax = plt.subplots()
+	resistances = []
+	reactances = []
+	for number in impedance:
+		resistances.append(np.real(number))
+		reactances.append(np.imag(number))
+	ax.plot(Ns_to_save, resistances, label='resistance')
+	ax.plot(Ns_to_save, reactances, label='reactance')
+	ax.set(xlabel='N')
 	ax.grid()
 	plt.legend()
 	plt.show()
